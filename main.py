@@ -5,63 +5,64 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 
+venture=input("찾고 싶은 벤처 기업명을 입력해 주세요: ")
+
+#크롬 드라이버 이용해서 가상환경 창으로 url보내서 띄워줌
+## **개인파일저장소로 바꿔주세요 !!! **
 chromedriver_dir = r'C:\Users\chaeh\Desktop\chromedriver.exe'
 driver = webdriver.Chrome(chromedriver_dir)
-
 driver.get("https://www.venturein.or.kr/venturein/infor/C22100.do")
 
-time.sleep(0.5)
-
+#검색창 가져오고 입력된 기업이름 검색
 element = driver.find_element_by_name('purcmpnam')
-element.send_keys("정진기")
-
+element.send_keys(venture)
 element.submit()
 driver.find_element_by_xpath('//*[@id="listForm"]/fieldset/div[2]/table/tbody/tr/td[2]/a').click()
 
-req = requests.get(driver.current_url)
 
+req = requests.get(driver.current_url)
 html = req.text
 soup = BeautifulSoup(html, 'html.parser')
 
-
+#업종명 가져오기
 summary_info = soup.find('div', {"class":"width_table pb80"})
 summary_info_list = summary_info.findAll('td')
-
 sil = str(summary_info_list[3])
-
-
 hangul = re.compile('[^ ㄱ-ㅣ가-힣]+')
 result = hangul.sub('',sil)
-print(result)
+print("업종명:", result)
 
-#예상수익 가져오기 시작
+#예상수익 가져오기
 driver.find_element_by_xpath('//*[@id="contents"]/div[3]/ul/li[2]/a').click()
-
 html = req.text
 soup = BeautifulSoup(html, 'html.parser')
 count=3
-first = driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[2]/table/tbody/tr[1]/td[3]').text
-if first=='' or float(first)==0.0 :
-    first=0
-    count-=1
-second=driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[2]/table/tbody/tr[1]/td[4]').text
-if second=='' or float(second)== 0.0:
-    second=0
-    count-=1
-third=driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[2]/table/tbody/tr[1]/td[5]').text
-if third=='' or float(third)== 0.0:
-    third=0
-    count-=1
+sum=0
+percentages=[]
+for i in range(3,6):
+    pc = driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[2]/table/tbody/tr[1]/td[' + str(i) + ']').text
+    if pc != '': #null값일때
+        percentages.append(float(pc))
+    else:
+        percentages.append(0.0)
+    if percentages[i-3]==0.0:
+        count=count-1
+    sum+=percentages[i-3]
 
 if count==0:
     count=1
-sum=(float(first)+float(second)+float(third))/count
+sum=sum/count
+print("3개년 증가율의 평균",sum)
 
 a=driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[3]/table/tbody/tr[1]/td[2]').text
-income=a.replace(',','')
-print("3개년 증가율의 평균",sum)
-print("최근 수익",int(income))
-print("n년 후 예상 수익:",(float(sum/100)*int(income))+int(income))
+income=int(a.replace(',',''))
+#예외처리
+if income==0:
+    print("최근 수익이 없어 예측불가 하여 프로그램을 종료합니다.")
+    exit()
+
+future_income=(float(sum/100)*income)+income
+print("n년 후 예상 수익:",future_income)
 
 #예상수익 가져오기 끝
 
@@ -143,3 +144,4 @@ per_data = driver.find_element_by_xpath('//*[@id="tab_con1"]/div[5]/table/tbody/
 
 print("PER:",float(per_data))
 
+print("예상 엑싯밸류 입니다:",float(per_data)*future_income)
