@@ -34,7 +34,7 @@ class ventureTab(QWidget):
         name = QLabel('*업종명*')
         Venturename = QLabel('플랫가든')
         per = QLabel('*평균 per*')
-        ventureper = QLabel('10.65')
+        ventureper = QLabel('10.65111')
         exitButton = QPushButton('exit', self)
 
         vbox = QVBoxLayout()

@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import *
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import numpy as np
+############################################################요깅
+from main import analysis
 
 class Parents(object):
     text = ''
@@ -79,17 +81,26 @@ class ventureTab(Parents, QWidget):
         self.initUI()
 
     def initUI(self):
-        name = QLabel('*업종명*')
+
+        ############################################################요깅
         Venturename = QLabel(Parents.text)
-        per = QLabel('per')
-        ventureper = QLabel('10.65')
+        name = QLabel(Venturename)
+        test = analysis(Parents.text)
+        test.run()
+        ############################################################요깅
+        year3_growth = QLabel('3년 증가율 \n'+ "3년전 : " + test.year3[0] + "\n2년전 : " + test.year3[1]+ "\n1년전 : " + test.year3[2])
+        total_income = QLabel('3년 증가폭 : '+ test.total_income)
+        ventureper = QLabel('per : '+ test.summary_info_list)
+        total = QLabel('per : '+ str(int(test.total))+"백만원")
         exitButton = QPushButton('exit', self)
 
         vbox = QVBoxLayout()
         vbox.addWidget(name)
         vbox.addWidget(Venturename)
-        vbox.addWidget(per)
+        vbox.addWidget(year3_growth)
+        vbox.addWidget(total_income)
         vbox.addWidget(ventureper)
+        vbox.addWidget(total)
         vbox.addWidget(exitButton)
         vbox.addStretch()
         self.setLayout((vbox))

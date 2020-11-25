@@ -35,7 +35,8 @@ class MainWindow(QMainWindow):
         r = self.win.showModal()
         if r:
             text = self.win.edit.text()
-            self.label.setText(text)
+
+            self.label.setText("다른 기업 검색")
             #self.pushtext(str(text))
     def pushtext(str):
         return str

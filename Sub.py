@@ -18,10 +18,11 @@ class sub_class:
         for i in range(Data_name_col.shape[0]):
             if Data_name_col.iloc[i, 1] == self.summary_info:
                 find_index = Data_name_col.iloc[i, 0]
+        if find_index:
+            while find_index > 100:
+                find_index = find_index / 10
 
-        while find_index > 100:
-            find_index = find_index / 10
-
-        find_index = int(find_index)
-
+            find_index = int(find_index)
+        else:
+            return 0
         return find_index
