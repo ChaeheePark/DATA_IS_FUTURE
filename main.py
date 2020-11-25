@@ -1,26 +1,27 @@
-from selenium import webdriver
 import time
 import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
+from Sub import sub_class
+import csv
 
 venture=input("찾고 싶은 벤처 기업명을 입력해 주세요: ")
 
 #크롬 드라이버 이용해서 가상환경 창으로 url보내서 띄워줌
 ## **개인파일저장소로 바꿔주세요 !!! **
-chromedriver_dir = '../chromedriver'
-driver = webdriver.Chrome(chromedriver_dir)
-driver.get("https://www.venturein.or.kr/venturein/infor/C22100.do")
 
 #검색창 가져오고 입력된 기업이름 검색
-element = driver.find_element_by_name('purcmpnam')
-element.send_keys(venture)
-element.submit()
-driver.find_element_by_xpath('//*[@id="listForm"]/fieldset/div[2]/table/tbody/tr/td[2]/a').click()
+
+url_data = pd.read_csv("kor_to_eng.csv")
 
 
-req = requests.get(driver.current_url)
+for i in range(url_data.shape[0]):
+    if venture == url_data.iloc[i,1]:
+        current_url = "https://www.venturein.or.kr/venturein/infor/C21210.do?venid="+url_data.iloc[i,0]+"&menu=1"
+
+print(current_url)
+req = requests.get(current_url)
 html = req.text
 soup = BeautifulSoup(html, 'html.parser')
 
@@ -28,73 +29,39 @@ soup = BeautifulSoup(html, 'html.parser')
 summary_info = soup.find('div', {"class":"width_table pb80"})
 summary_info_list = summary_info.findAll('td')
 sil = str(summary_info_list[3])
-hangul = re.compile('[^ ㄱ-ㅣ가-힣]+')
-result = hangul.sub('',sil)
-print("업종명:", result)
+result = sil.split("\"3\">")[1]
+result = result.split("<")[0]
+print("업종명:",result)
 
-#예상수익 가져오기
-driver.find_element_by_xpath('//*[@id="contents"]/div[3]/ul/li[2]/a').click()
-html = req.text
-soup = BeautifulSoup(html, 'html.parser')
-count=3
-sum=0
-percentages=[]
-for i in range(3,6):
-    pc = driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[2]/table/tbody/tr[1]/td[' + str(i) + ']').text
-    if pc != '': #null값일때
-        percentages.append(float(pc))
-    else:
-        percentages.append(0.0)
-    if percentages[i-3]==0.0:
-        count=count-1
-    sum+=percentages[i-3]
+income_csv = pd.read_csv("output.csv")
 
-if count==0:
-    count=1
-sum=sum/count
-print("3개년 증가율의 평균",sum)
+for i in range(0,income_csv.shape[0]):
+    temp_save = income_csv.iloc[i][0]
+    temp_save = temp_save.split(", '")[1]
+    temp_save = temp_save.split("'")[0]
+    if temp_save == venture:
+        year3 = income_csv.iloc[i][1]
+        year3 = year3.split(',')
+        total_income = (income_csv.iloc[i])[2]
+        break
 
-a=driver.find_element_by_xpath('//*[@id="contents"]/div[4]/div[3]/table/tbody/tr[1]/td[2]').text
-income=int(a.replace(',',''))
-#예외처리
-if income==0:
-    print("최근 수익이 없어 예측불가 하여 프로그램을 종료합니다.")
-    exit()
+print("3년도 매출액 증가율",year3)
 
-future_income=(float(sum/100)*income)+income
-print("n년 후 예상 수익:",future_income)
-
+print("3개년 증가율의 평균",total_income)
 #예상수익 가져오기 끝
 
 #업종코드 가져오기 시작
 
-driver.get("https://www.venturein.or.kr/venturein/infor/C22100.do")
-driver.find_element_by_xpath('//*[@id="listForm"]/fieldset/div[1]/ul/li[6]/span/a/img').click()
 
-driver.switch_to.window(driver.window_handles[-1])
+upjong_code = sub_class()
+summary_info = upjong_code.eng_to_upjong(result)
 
-element = driver.find_element_by_name('upjcodnam')
-element.send_keys(result)
-
-driver.find_element_by_xpath('//*[@id="listForm"]/div/div/fieldset/ul[1]/li[2]/input').click()
-
-req = requests.get(driver.current_url)
-
-html = req.text
-soup = BeautifulSoup(html, 'html.parser')
-
-summary_info = driver.find_element_by_xpath('//*[@id="listForm"]/div/div/fieldset/div[2]/table/tbody/tr/td[1]/a').text
-
-
-summary_info = int(int(summary_info) / 1000)
 print("업종코드:",summary_info)
 
 #업종코드 가져오기 끝
 
 #업종코드로 PER가져오기
 
-driver.close()
-driver.switch_to.window(driver.window_handles[0])
 
 df = pd.read_csv("업종코드.csv", encoding='utf-8')
 
@@ -124,7 +91,6 @@ for i in range(0,len(data)):
     if data[i] == "서비스":
         data[i] = "IT서비스"
     if data[i] == naver_name:
-        print(data[i])
 
         save = summary_info_list[i]
 
@@ -135,13 +101,32 @@ save3 = "https://finance.naver.com" + save2[1]
 
 save3 = save3.replace("amp;","")
 
-print(save3)
+req = requests.get(save3)
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
 
-driver.get(save3)
-driver.find_element_by_xpath('//*[@id="contentarea"]/div[4]/table/tbody/tr[1]/td[1]/div/a').click()
+#업종명 가져오기
+summary_info = soup.find('div', {"class":"name_area"})
+summary_info_list = summary_info.find('a')
+summary_info_list = str(summary_info_list).split("href=\"")[1]
+summary_info_list = summary_info_list.split("\">")[0]
+summary_info_list = "https://finance.naver.com"+summary_info_list
 
-per_data = driver.find_element_by_xpath('//*[@id="tab_con1"]/div[5]/table/tbody/tr[1]/td/em').text
+req = requests.get(summary_info_list)
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
+summary_info = soup.find('table', {"summary":"동일업종 PER 정보"})
+summary_info_list = summary_info.find('em')
 
-print("PER:",float(per_data))
+print("per : ",summary_info_list.text)
 
-print("예상 엑싯밸류 입니다:",float(per_data)*future_income)
+if total_income != 'x':
+    print("엑싯 벨류 : ",float(total_income) * float(summary_info_list.text))
+else:
+    print("데이터 부족으로 인한, 엑싯 벨류 계산 불가.")
+
+header = ['venture_name','three-year sales growth rate', 'average three-year growth rate', 'per']
+with open('filename.csv', 'w', newline='') as csv_file:
+    writer = csv.writer(csv_file, delimiter=',', quotechar='"')
+    writer.writerow(header)
+    writer.writerow([venture, year3, total_income, summary_info_list.text])
