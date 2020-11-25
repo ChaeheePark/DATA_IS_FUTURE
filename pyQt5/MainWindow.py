@@ -2,7 +2,8 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from SubWindow import SubWindow
+from SubWindow import Window
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,11 +29,15 @@ class MainWindow(QMainWindow):
         centralWidget = QWidget()
         centralWidget.setLayout(layout)
         self.setCentralWidget(centralWidget)
+
     def onButtonClicked(self):
-        self.win = SubWindow()
+        self.win = Window()
         r = self.win.showModal()
         if r:
             text = self.win.edit.text()
             self.label.setText(text)
+            #self.pushtext(str(text))
+    def pushtext(str):
+        return str
     def show(self):
         super().show()
