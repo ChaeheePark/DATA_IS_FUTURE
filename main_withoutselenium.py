@@ -23,10 +23,6 @@ for i in range(1,3909):
         data = data.replace(' ','')
         data = [data, data2]
 
-        with open('output.csv','a',encoding="utf8") as file:
-            writer = csv.writer(file)
-            writer.writerow(data)
-
         page_id = "https://www.venturein.or.kr/venturein/infor/C21221.do?venid="+data[0]+"&menu=1"
         print(page_id)
 
@@ -55,9 +51,16 @@ for i in range(1,3909):
                 income = (income[7].text).replace(',', '')
             income=int(income[7].text)
             if income == 0:
-                print('최근 수익이 없어 엑싯벨류를 예측하지 못합니다.')
+                future_income = 'x'
                 continue
             future_income = (float(sum / 100) * income) + income
             print("n년 후 예상 수익:", future_income)
         except IndexError:
-            print('최근 수익이 없어 엑싯벨류를 예측하지 못합니다.')
+            future_income='x'
+
+        full_data=[data,summary,future_income]
+
+        with open('output.csv', 'a', encoding="utf8") as file:
+            writer = csv.writer(file)
+            writer.writerow(full_data)
+
