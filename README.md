@@ -4,6 +4,7 @@
 
 **2020년 2학기 스터디 상생플러스**
 
+![image](https://user-images.githubusercontent.com/60170358/106112627-d87a2300-6190-11eb-8b65-e83b10b9c283.png)
 
 ----------
 
