@@ -10,7 +10,7 @@
 
 **팀원** : 김진성, 고동천, 사호진, 박채희, 김유빈
 
-### 현재는 벤처 기업 사이트 이전으로 인해 프로그램을 실행할 수 없는 상태입니다. (2022년 1월 기준)
+### 주의 : 현재는 벤처 기업 사이트 이전으로 인해 프로그램을 실행할 수 없는 상태입니다. (2022년 1월 기준)
 
 ----------
 
@@ -82,12 +82,6 @@ http://www.gisdeveloper.co.kr/?p=8328
 
 https://app.diagrams.net
 프로그램 순서도 작성 사이트
-
-https://books.google.com/ngrams/graph?content=Agriculture&year_start=1800&year_end=2019&corpus=26&smoothing=3&direct_url=t1%3B%2CAgriculture%3B%2Cc0#t1%3B%2CAgriculture%3B%2Cc0
-구글 NgramViewer – 농업 분야 검색
-
-https://orange3-text.readthedocs.io/en/latest/widgets/wordcloud.html
-트위터 API를 활용한 워드클라우드
 
 https://spectrum.ieee.org/at-work/innovation/the-2018-top-programming-languages
 IEEE Spectrum Language Rating
