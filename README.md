@@ -37,6 +37,7 @@
 ----------
 
 **4. 실행 화면**
+
 ![image](https://user-images.githubusercontent.com/60170358/151652754-b92cf7d8-ada5-4ce2-85f8-4459e175d25c.png)
 
 ("백의민족" 벤처기업 검색 화면)
