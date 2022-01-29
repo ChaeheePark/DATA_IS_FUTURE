@@ -23,6 +23,8 @@
 **2. 개요**
 
 벤처캐피탈(VC)는 경쟁력과 성장 가능성이 있는 기업의 주식을 사는 형태로 투자를 집행하는 기업 또는 기업의 자본을 말한다. 그동안 금융 시장에서 기업가치평가의 주된 주체는 벤처캐피탈이었다. 그래서 우리도 기업가치를 정하는 방법으로 잘 알려진 모델인 ‘벤처캐피탈 평가법’을 사용해 기업의 투자 가치를 알려주기로 했다.
+
+
 ![image](https://user-images.githubusercontent.com/60170358/151652685-f31d23da-7521-48ce-972c-4204678ed8d1.png)
 
 
@@ -36,10 +38,17 @@
 
 **4. 실행 화면**
 ![image](https://user-images.githubusercontent.com/60170358/151652754-b92cf7d8-ada5-4ce2-85f8-4459e175d25c.png)
+
 ("백의민족" 벤처기업 검색 화면)
+
+
 ![image](https://user-images.githubusercontent.com/60170358/151652774-71ecfd0f-b9e1-46c6-aa57-3d39cd68ef53.png)
+
 ("백의민족" 검색 차트 화면)
+
+
 ![image](https://user-images.githubusercontent.com/60170358/151652785-933df62c-8046-4fea-b406-9db172fbc4b2.png)
+
 (투자 가치성이 높은 상위 10개 기업)
 
 ----------
